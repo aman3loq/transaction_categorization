@@ -13,22 +13,22 @@ from configobj import ConfigObj
 import csv
 
 def cleanFunc(L):
-	d = L[0]
-	delimiter = L[1]
-	cachedStopWords = stopwords.words('english')
+	df = L[0] # chunk-data goes here
+	delimiter = L[1] # delimiter goes here
+	cachedStopWords = stopwords.words('english') # caching stop words for quicker computation when removing stop-words
 
 	# removal of non alphabetic characters
-	d['tran_particular'] = d.apply(lambda x : re.sub('[^a-zA-z ]+',' ', str(x['tran_particular']).lower()), axis = 1)
-	d['tran_particular'] = d.apply(lambda x : re.sub('\w\_',' ',str(x['tran_particular']).lower()), axis = 1)
+	df['tran_particular'] = df.apply(lambda x : re.sub('[^a-zA-z ]+',' ', str(x['tran_particular']).lower()), axis = 1)
+	df['tran_particular'] = df.apply(lambda x : re.sub('\w\_',' ',str(x['tran_particular']).lower()), axis = 1)
 	# removal of extra white space 
-	d['tran_particular'] = d.apply(lambda x : re.sub('\W+', ' ', x['tran_particular']).strip(), axis = 1)
+	df['tran_particular'] = df.apply(lambda x : re.sub('\W+', ' ', x['tran_particular']).strip(), axis = 1)
 	# removing stop words
 	# make sure to have nltk data downloaded before-hand
-	d['tran_particular'] = d['tran_particular'].apply(lambda x: ' '.join([item for item in x.split() if item not in cachedStopWords]))
+	df['tran_particular'] = df['tran_particular'].apply(lambda x: ' '.join([item for item in x.split() if item not in cachedStopWords]))
 	# positional marking
-	d['tran_particular'] = d.apply(lambda z : delimiter.join(map(lambda z, y : z +'_P' + str(y), z['tran_particular'].split(),range(1,len(z['tran_particular'].split()) + 1))), axis = 1)
+	df['tran_particular'] = df.apply(lambda z : delimiter.join(map(lambda z, y : z +'_P' + str(y), z['tran_particular'].split(),range(1,len(z['tran_particular'].split()) + 1))), axis = 1)
 
-	return d
+	return df
 
 def parallelize(data, func, delimiter):
 	data_split = np.array_split(data, partitions)
