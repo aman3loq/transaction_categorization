@@ -13,10 +13,11 @@ from collections import defaultdict, namedtuple
 from itertools import imap
 from Streamer import Streamer
 import sys
-
-__author__ = 'Eric Naeseth <eric@naeseth.com>'
-__copyright__ = 'Copyright © 2009 Eric Naeseth'
-__license__ = 'MIT License'
+try:
+    from itertools import imap
+except ImportError:
+    # for Python 3 implementation
+    imap=map
 
 #def find_frequent_itemsets(transactions, minimum_support, include_support=False):
 def find_frequent_itemsets(file_path, minimum_support, include_support=False):
@@ -171,15 +172,15 @@ class FPTree(object):
         return (collect_path(node) for node in self.nodes(item))
 
     def inspect(self):
-        print 'Tree:'
+        print('Tree:')
         self.root.inspect(1)
 
-        print
-        print 'Routes:'
+        print()
+        print('Routes:')
         for item, nodes in self.items():
-            print '  %r' % item
+            print('  %r' % item)
             for node in nodes:
-                print '    %r' % node
+                print('    %r' % node)
 
 def conditional_tree_from_paths(paths):
     """Build a conditional FP-tree from the given prefix paths."""
@@ -316,7 +317,7 @@ class FPNode(object):
         return tuple(self._children.itervalues())
 
     def inspect(self, depth=0):
-        print ('  ' * depth) + repr(self)
+        print(('  ' * depth) + repr(self))
         for child in self.children:
             child.inspect(depth + 1)
 
@@ -347,7 +348,6 @@ if __name__ == '__main__':
     #for itemset, support in find_frequent_itemsets(transactions, options.minsup, True):
     R = find_frequent_itemsets(args[0], options.minsup, True)
     for itemset, support in R:
-       # if("_P1" in itemset[0]):
        result.append((itemset,support))
     result = sorted(result, key=lambda i: i[1],reverse=True)
     count_line=Streamer(args[0]).line_count()
