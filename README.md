@@ -5,7 +5,7 @@ sub-phases of transaction categorization:
   
   > frequent pattern mining
   
-  > creation of grammar based on frequent patterns
+  > creation of grammar based on frequent patterns (mannualy) 
   
   > tagging grammar to the cleansed data
   
